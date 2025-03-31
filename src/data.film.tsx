@@ -1,4 +1,4 @@
-export const movies = [
+export const MOVIES = [
     { id: 1, title: "Inception", genre: "Sci-Fi" },
     { id: 2, title: "The Godfather", genre: "Crime" },
     { id: 3, title: "The Dark Knight", genre: "Action" },
@@ -20,5 +20,5 @@ export const movies = [
     { id: 19, title: "Shrek", genre: "Comedy" },
     { id: 20, title: "The Lion King", genre: "Animation" }
 ];
-export type Tmovies = (typeof movies)[0]
+export type Tmovies = (typeof MOVIES)[0]
 
