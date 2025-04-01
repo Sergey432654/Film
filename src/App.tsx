@@ -25,7 +25,7 @@ export default function Movies() {
         placholder = "frewfwer"
         value = {searchTerm}
         onChange = {e => setSearchTerm(e.target.value)}
-        className='px-3 py-2 rounded mb-6 text-white outline-none border border-solid border-transparent  focus: border-purple-500 transition-colors'
+        className='px-3 py-2 rounded mb-6 text-white outline-none border border-solid border-transparent focus: border-purple-500 transition-colors'
         />
 
         <div>
