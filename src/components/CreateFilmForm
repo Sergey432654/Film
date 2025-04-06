@@ -1,3 +1,0 @@
-export CreateFilmForm() {
-    return <div>CreateFilmForm()</div>
-}

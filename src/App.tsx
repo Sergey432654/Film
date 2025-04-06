@@ -1,27 +1,27 @@
-import { MOVIES } from "./data.film"
+import { MOVIES, Tmovies } from "./data.film"
 import { useState } from "react";
 import { twMerge } from 'tailwind-merge';
 import "tailwindcss";
+import 'react-hook-form'
+import { CreateFilmForm } from "./components/CreateFilmForm";
 
 export default function Movies() {
   const [searchTerm, setSearchTerm] = useState(''); 
   const [selectedGenre, setSelectGenre] = useState('');
-  const [selectTeam ,setSelectTeam] = useState('');
+  const [movieList,setMovieList] = useState<Tmovies[]>(MOVIES)
 
-  const genres = Array.from(new Set(MOVIES.map(movie => movie.genre)))
+  const genres = Array.from(new Set(movieList.map(movie => movie.genre)))
 
-  const filtredMovies = MOVIES.filter(movie =>{
+  const filtredMovies = movieList.filter(movie =>{
     const isMachingSearchTerm = movie.title.toLowerCase().includes(searchTerm.toLowerCase())
     const isMachingGanre = selectedGenre ? movie.genre == selectedGenre : true
 
     return isMachingSearchTerm && isMachingGanre
 })
   return (
-    <>
-
       <div>
         <h1 className='text-6px font-bold mb-10'>Movies</h1>
-
+        <CreateFilmForm setMovieList={setMovieList}/>
         <input 
         type="text" 
         placholder = "frewfwer"
@@ -49,7 +49,6 @@ export default function Movies() {
           }
         </ul>
       </div>
-    </>
   )
 }
 
