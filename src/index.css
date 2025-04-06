@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+input {
+  @apply px-3 py-2 rounded mb-6 text-white outline-none border border-solid border-transparent focus:border-purple-500 transition-colors bg-gray-400
+}
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -40,16 +43,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
 @media (prefers-color-scheme: light) {
@@ -63,4 +57,16 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.fade{
+  animation: fadeIn 0.5s;
+}
+@keyframes fadeIn {
+  from{
+    opacity: 0;
+  }to{
+    opacity: 1;
+  }
+  
 }
