@@ -2,6 +2,7 @@ import { MOVIES, Tmovies } from "./data.film"
 import { useState } from "react";
 import { twMerge } from 'tailwind-merge';
 import "tailwindcss";
+import './index.css'
 import 'react-hook-form'
 import { CreateFilmForm } from "./components/CreateFilmForm";
 
@@ -20,8 +21,8 @@ export default function Movies() {
 })
   return (
       <div>
-        <h1 className='text-6px font-bold mb-10'>Movies</h1>
         <CreateFilmForm setMovieList={setMovieList}/>
+        <h1 className='text-6px font-bold mb-10'>Movies</h1>
         <input 
         type="text" 
         placholder = "frewfwer"
@@ -32,7 +33,7 @@ export default function Movies() {
         <div className="flex items-center gap-3 mb-6">
           {genres.map(genre => 
             <button
-              className={twMerge('px-3 py-1 rounded text-white bg-zinc-900',
+              className={twMerge('px-10 py-1 rounded text-white bg-zinc-900',
               selectedGenre == genre ? 'bg-purple-600' : 'bg-zinc-900'
               )}
               key={genre}
