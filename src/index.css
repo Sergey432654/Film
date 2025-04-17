@@ -19,7 +19,7 @@ input {
 }
 
 button{
- @apply rounded-lg border border-transparent px-4 py-2 text-base font-medium cursor-pointer;
+  @apply rounded-lg border border-transparent px-4 py-2 text-base font-medium cursor-pointer;
 }
 body {
   @apply m-0 min-w-[320] min-h-screen p-5;

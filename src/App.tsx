@@ -25,7 +25,7 @@ export default function Movies() {
         <h1 className='text-6xl font-bold mb-10'>Movies</h1>
         <input 
         type="text" 
-        placholder = "frewfwer"
+        placeholder = "frewfwer"
         value = {searchTerm}
         onChange = {e => setSearchTerm(e.target.value)}
         />
@@ -33,7 +33,7 @@ export default function Movies() {
         <div className="flex items-center gap-3 mb-6">
           {genres.map(genre => 
             <button
-              className={twMerge('rounded-lg border border-transparent px-4 py-2 text-base font-medium font-inherit cursor-pointer px-10 py-1 rounded text-white bg-zinc-900',
+              className={twMerge('px-10 py-1 rounded text-white bg-zinc-900',
               selectedGenre == genre ? 'bg-purple-600' : 'bg-zinc-900'
               )}
               key={genre}
