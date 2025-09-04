@@ -8,13 +8,10 @@ export default function Header(){
                     <img src="/" alt="retrte" />
                 </div>
                 <div className="flex gap-4">
-                    <div className="">
-                    <Link to="/about" style={{ textDecoration: "none" }}> <div className="">Movie</div></Link>
-                    </div>
-                    <div className="">Movie</div>
-                    <div className="">Profile</div>
-                    <div className="">About</div>
-                    <div className="">Message</div>
+                    <Link to='/movie'>Movie</Link>
+                    <Link to='/PENIS'>Penis</Link>
+                    <Link to='/Egor'>Egor</Link>
+                    <Link to='/pupok'>Pupok</Link>
                 </div>
             </nav>
     )
