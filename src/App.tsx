@@ -5,6 +5,8 @@ import "tailwindcss";
 import './index.css'
 import 'react-hook-form'
 import { CreateFilmForm } from "./components/CreateFilmForm";
+import { Link } from "react-router-dom";
+
 
 export default function Movies() {
   const [searchTerm, setSearchTerm] = useState(''); 
@@ -29,7 +31,6 @@ export default function Movies() {
         value = {searchTerm}
         onChange = {e => setSearchTerm(e.target.value)}
         />
-
         <div className="flex items-center gap-3 mb-6">
           {genres.map(genre => 
             <button
