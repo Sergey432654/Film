@@ -5,7 +5,7 @@ export default function Header(){
     return(
             <nav className=" min-h-18 border-b border-white/10 px-3 py-4 flex items-center justify-between bg-black">
                 <div>
-                    <img src="/" alt="retrte" />
+                    <img className="w-25 h-25" src="/src/pictures/bird.png" alt="retrte" />
                 </div>
                 <div className="flex gap-4">
                     <Link to='/movie'>Movie</Link>
