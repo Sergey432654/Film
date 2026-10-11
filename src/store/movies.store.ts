@@ -14,6 +14,7 @@ interface MoviesState {
 interface MoviesActions {
   addMovie: (movie: NewMovie) => Movie;
   setSearchTerm: (searchTerm: string) => void;
+  setGenre: (genre: string | null) => void;
   toggleGenre: (genre: string) => void;
   resetFilters: () => void;
 }
@@ -35,6 +36,7 @@ export const useMoviesStore = create<MoviesStore>()(
         return movie;
       },
       setSearchTerm: (searchTerm) => set({ searchTerm }, undefined, 'filters/search'),
+      setGenre: (selectedGenre) => set({ selectedGenre }, undefined, 'filters/setGenre'),
       toggleGenre: (genre) =>
         set(
           (state) => ({ selectedGenre: state.selectedGenre === genre ? null : genre }),
@@ -46,9 +48,6 @@ export const useMoviesStore = create<MoviesStore>()(
     { name: 'movies', enabled: import.meta.env.DEV },
   ),
 );
-
-// Похідні дані рахуємо через useMemo, а не всередині селектора:
-// селектор, що щоразу повертає новий масив, у zustand v5 дає нескінченний ре-рендер.
 
 export function useGenres() {
   const movies = useMoviesStore((s) => s.movies);
