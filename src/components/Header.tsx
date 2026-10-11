@@ -1,18 +1,37 @@
-import { Link } from "react-router-dom"
+import { NavLink } from 'react-router';
+import { twMerge } from 'tailwind-merge';
 
+import { ROUTES } from '@/app/routes';
+import logo from '@/assets/bird.png';
 
-export default function Header(){
-    return(
-            <nav className=" min-h-18 border-b border-white/10 px-3 py-4 flex items-center justify-between bg-black">
-                <div>
-                    <img className="w-25 h-25" src="/src/pictures/bird.png" alt="retrte" />
-                </div>
-                <div className="flex gap-4">
-                    <Link to='/movie'>Movie</Link>
-                    <Link to='/PENIS'>Penis</Link>
-                    <Link to='/Egor'>Egor</Link>
-                    <Link to='/pupok'>Pupok</Link>
-                </div>
-            </nav>
-    )
+const NAV_ITEMS = [
+  { to: ROUTES.home, label: 'Movies' },
+  { to: ROUTES.addMovie, label: 'Add movie' },
+];
+
+export default function Header() {
+  return (
+    <header className="flex items-center justify-between border-b border-white/10 bg-black px-4 py-3">
+      <NavLink to={ROUTES.home}>
+        <img className="size-16" src={logo} alt="Film logo" />
+      </NavLink>
+      <nav className="flex gap-4">
+        {NAV_ITEMS.map(({ to, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end
+            className={({ isActive }) =>
+              twMerge(
+                'text-zinc-300 transition-colors hover:text-white',
+                isActive && 'text-purple-400',
+              )
+            }
+          >
+            {label}
+          </NavLink>
+        ))}
+      </nav>
+    </header>
+  );
 }

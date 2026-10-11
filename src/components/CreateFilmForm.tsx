@@ -1,77 +1,58 @@
-import { SubmitHandler, useForm } from "react-hook-form"
-import { Dispatch, SetStateAction } from "react"
-import { MOVIES, Tmovies } from "../data.film"
+import { useForm, type SubmitHandler } from 'react-hook-form';
 
-
-type TCreateMovieForm = Pick<Tmovies, 'title' | 'genre'>
+import { useMoviesStore } from '@/store/movies.store';
+import type { Movie, NewMovie } from '@/types/movie';
 
 interface Props {
-  setMovieList: Dispatch<SetStateAction<Tmovies[]>>
+  onCreated?: (movie: Movie) => void;
 }
 
-export function CreateFilmForm({ setMovieList }: Props) {
+const notBlank = (message: string) => (value: string) => value.trim() !== '' || message;
+
+export function CreateFilmForm({ onCreated }: Props) {
+  const addMovie = useMoviesStore((s) => s.addMovie);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<TCreateMovieForm>({
-    mode: "onChange",
-  })
+  } = useForm<NewMovie>({ mode: 'onChange' });
 
-  const onSubmit: SubmitHandler<TCreateMovieForm> = (data) => {
-    const newMovie: Tmovies = {
-      id: MOVIES.length + 1,
-      ...data,
-    }
-    setMovieList((prev) => [...prev, newMovie])
-    reset()
-  }
+  const onSubmit: SubmitHandler<NewMovie> = (data) => {
+    const movie = addMovie({ title: data.title.trim(), genre: data.genre.trim() });
+    reset();
+    onCreated?.(movie);
+  };
 
   return (
-    <div>
-      <h2 className="text-4xl font-bold mb-10">Add a new movie</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex max-w-sm flex-col gap-2">
+      <div>
         <input
-          {...register("title", {
-            required: {
-              message: "Title is required",
-              value: true,
-            },
+          {...register('title', {
+            required: 'Title is required',
+            validate: notBlank('Title is required'),
           })}
           type="text"
           placeholder="Movie title"
-          className="block"
+          className="block w-full"
         />
-        {errors.title?.message && (
-          <p className="text-red-500">{String(errors.title.message)}</p>
-        )}
-    </div>
-    <div>
+        {errors.title && <p className="text-red-500">{errors.title.message}</p>}
+      </div>
+      <div>
         <input
-          {...register("genre", {
-            required: {
-              message: "Genre is required",
-              value: true,
-            },
+          {...register('genre', {
+            required: 'Genre is required',
+            validate: notBlank('Genre is required'),
           })}
           type="text"
           placeholder="Movie genre"
-          className="block"
+          className="block w-full"
         />
-        {errors.genre?.message && (
-          <p className="text-red-500">{String(errors.genre.message)}</p>
-        )}
-    </div>
-
-        <button
-          type="submit"
-          className="bg-red-400 px-3 py-2 rounded mb-5 text-white"
-        >
-          Add film
-        </button>
-      </form>
-    </div>
-  )
+        {errors.genre && <p className="text-red-500">{errors.genre.message}</p>}
+      </div>
+      <button type="submit" className="self-start bg-red-400 text-white">
+        Add film
+      </button>
+    </form>
+  );
 }
