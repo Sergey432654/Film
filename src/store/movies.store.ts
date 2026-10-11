@@ -16,6 +16,7 @@ interface MoviesActions {
   setSearchTerm: (searchTerm: string) => void;
   setGenre: (genre: string | null) => void;
   toggleGenre: (genre: string) => void;
+  browseGenre: (genre: string) => void;
   resetFilters: () => void;
 }
 
@@ -43,6 +44,8 @@ export const useMoviesStore = create<MoviesStore>()(
           undefined,
           'filters/toggleGenre',
         ),
+      browseGenre: (genre) =>
+        set({ selectedGenre: genre, searchTerm: '' }, undefined, 'filters/browseGenre'),
       resetFilters: () => set({ searchTerm: '', selectedGenre: null }, undefined, 'filters/reset'),
     }),
     { name: 'movies', enabled: import.meta.env.DEV },
@@ -52,6 +55,29 @@ export const useMoviesStore = create<MoviesStore>()(
 export function useGenres() {
   const movies = useMoviesStore((s) => s.movies);
   return useMemo(() => Array.from(new Set(movies.map((m) => m.genre))), [movies]);
+}
+
+export function useGenreStats() {
+  const movies = useMoviesStore((s) => s.movies);
+  return useMemo(() => {
+    const counts = new Map<string, number>();
+    movies.forEach((m) => counts.set(m.genre, (counts.get(m.genre) ?? 0) + 1));
+    return Array.from(counts, ([genre, count]) => ({ genre, count })).sort(
+      (a, b) => b.count - a.count || a.genre.localeCompare(b.genre),
+    );
+  }, [movies]);
+}
+
+export function useTopMovies(limit = 10) {
+  const movies = useMoviesStore((s) => s.movies);
+  return useMemo(
+    () =>
+      movies
+        .filter((m) => m.rating !== undefined)
+        .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
+        .slice(0, limit),
+    [movies, limit],
+  );
 }
 
 export function useFilteredMovies() {

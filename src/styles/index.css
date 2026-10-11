@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/inter';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 
@@ -34,22 +36,41 @@
   }
 }
 
-@utility container {
-  margin-inline: auto;
-  padding-inline: 1rem;
-
-  @variant sm {
-    padding-inline: 1.5rem;
-  }
-  @variant lg {
-    padding-inline: 2rem;
-  }
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-raised: var(--surface-raised);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-chrome: var(--chrome);
 }
 
 @layer base {
-  html {
-    @apply scroll-smooth bg-white text-zinc-900 antialiased;
+  :root {
+    --surface: #ffffff;
+    --surface-muted: #f5f5fa;
+    --surface-raised: #ffffff;
+    --line: #e4e4ec;
+    --fg: #18181b;
+    --fg-muted: #6b6b7b;
+    --chrome: var(--color-indigo-950);
     color-scheme: light;
+  }
+
+  .dark {
+    --surface: #0b0a17;
+    --surface-muted: #12101f;
+    --surface-raised: #1a1729;
+    --line: #2b2842;
+    --fg: #ececf4;
+    --fg-muted: #9c9ab2;
+    --chrome: #0f0d24;
+    color-scheme: dark;
+  }
+
+  html {
+    @apply scroll-smooth bg-surface text-fg antialiased;
   }
 
   body {
@@ -63,5 +84,25 @@
 
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+
+  @variant sm {
+    padding-inline: 1.5rem;
+  }
+  @variant lg {
+    padding-inline: 2rem;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }

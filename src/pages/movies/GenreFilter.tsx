@@ -21,7 +21,7 @@ function Chip({
         'shrink-0 rounded-sm border px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition-colors',
         active
           ? 'border-brand-600 bg-brand-600 text-white'
-          : 'border-zinc-200 bg-white text-zinc-700 hover:border-brand-300 hover:text-brand-700',
+          : 'border-line bg-surface-raised text-fg hover:border-brand-400 hover:text-brand-600 dark:hover:text-brand-300',
       )}
     >
       {children}

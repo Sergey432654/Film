@@ -12,10 +12,10 @@ const notBlank = (message: string) => (value: string) => value.trim() !== '' || 
 
 const inputClass = (invalid: boolean) =>
   cn(
-    'block h-11 w-full rounded-sm border bg-white px-3 text-sm text-zinc-900 transition-colors placeholder:text-zinc-400 focus:outline-none',
+    'block h-11 w-full rounded-sm border bg-surface-raised px-3 text-sm text-fg transition-colors placeholder:text-fg-muted focus:outline-none',
     invalid
       ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
-      : 'border-zinc-300 hover:border-zinc-400 focus:border-brand-600 focus:ring-1 focus:ring-brand-600',
+      : 'border-line hover:border-fg-muted focus:border-brand-600 focus:ring-1 focus:ring-brand-600',
   );
 
 export default function CreateFilmForm({ onCreated }: Props) {
@@ -37,7 +37,7 @@ export default function CreateFilmForm({ onCreated }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
       <div className="space-y-1.5">
-        <label htmlFor="title" className="block text-sm font-medium text-zinc-800">
+        <label htmlFor="title" className="block text-sm font-medium text-fg">
           Title
         </label>
         <input
@@ -60,7 +60,7 @@ export default function CreateFilmForm({ onCreated }: Props) {
       </div>
 
       <div className="space-y-1.5">
-        <label htmlFor="genre" className="block text-sm font-medium text-zinc-800">
+        <label htmlFor="genre" className="block text-sm font-medium text-fg">
           Genre
         </label>
         <input

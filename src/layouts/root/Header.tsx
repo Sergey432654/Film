@@ -5,6 +5,7 @@ import { Link, NavLink } from 'react-router';
 import HeaderSearch from './HeaderSearch';
 import Logo from './Logo';
 import { NAV_ITEMS } from './navigation';
+import ThemeToggle from './ThemeToggle';
 
 import { ROUTES } from '@/app/routes';
 import { cn } from '@/lib/cn';
@@ -34,7 +35,7 @@ export default function Header() {
       media.removeEventListener('change', onMediaChange);
     };
   }, [menuOpen, searchOpen]);
-  
+
   useEffect(() => {
     if (!menuOpen) return;
     const { overflow } = document.body.style;
@@ -45,7 +46,7 @@ export default function Header() {
   }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-brand-950/95 text-white backdrop-blur supports-backdrop-filter:bg-brand-950/85">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-chrome/95 text-white backdrop-blur supports-backdrop-filter:bg-chrome/85">
       <div className="container flex h-16 items-center gap-3 lg:gap-6">
         <button
           type="button"
@@ -98,6 +99,8 @@ export default function Header() {
             {searchOpen ? <X className="size-5" /> : <Search className="size-5" />}
           </button>
 
+          <ThemeToggle className="mr-1" />
+
           <Link
             to={ROUTES.addMovie}
             onClick={closeAll}
@@ -129,7 +132,7 @@ export default function Header() {
           />
           <nav
             aria-label="Mobile"
-            className="relative animate-fade-in border-b border-white/10 bg-brand-950 py-2"
+            className="relative animate-fade-in border-b border-white/10 bg-chrome py-2"
           >
             <ul className="container">
               {NAV_ITEMS.map(({ to, label }) => (

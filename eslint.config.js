@@ -32,6 +32,5 @@ export default defineConfig([
     files: ['*.config.{js,ts}'],
     languageOptions: { globals: globals.node },
   },
-  // Має бути останнім: вимикає правила, що конфліктують з Prettier
   prettier,
 ]);
