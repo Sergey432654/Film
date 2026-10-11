@@ -1,9 +1,11 @@
 import { ChevronLeft, ChevronRight, Film, Star } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { useTopMovies } from '@/api/movies/movies.queries';
+import type { Movie } from '@/api/movies/movies.schemas';
 import { cn } from '@/lib/cn';
-import { useTopMovies } from '@/store/movies.store';
-import type { Movie } from '@/types/movie';
+import QueryError from '@/ui/QueryError';
+import Skeleton from '@/ui/Skeleton';
 
 import SectionHeading from './SectionHeading';
 
@@ -35,11 +37,16 @@ function TopMovieCard({ movie, rank }: { movie: Movie; rank: number }) {
   );
 }
 
+const ITEM_CLASS = cn(
+  'shrink-0 snap-start',
+  'basis-[calc((100%-1rem)/2)] sm:basis-[calc((100%-2rem)/3)] md:basis-[calc((100%-3rem)/4)] lg:basis-[calc((100%-4rem)/5)]',
+);
+
 const arrowClass =
   'inline-flex size-10 items-center justify-center rounded-sm border border-line bg-surface-raised transition-colors hover:border-brand-500 hover:text-brand-600 disabled:pointer-events-none disabled:opacity-40 dark:hover:text-brand-400';
 
 export default function TopMoviesCarousel() {
-  const movies = useTopMovies(10);
+  const { data: movies, isPending, isError, error, refetch, isRefetching } = useTopMovies(10);
   const trackRef = useRef<HTMLUListElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
@@ -57,7 +64,7 @@ export default function TopMoviesCarousel() {
     const observer = new ResizeObserver(updateEdges);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [updateEdges]);
+  }, [updateEdges, movies]);
 
   const scrollByPage = (direction: 1 | -1) => {
     const el = trackRef.current;
@@ -76,7 +83,7 @@ export default function TopMoviesCarousel() {
               <button
                 type="button"
                 onClick={() => scrollByPage(-1)}
-                disabled={atStart}
+                disabled={isPending || atStart}
                 aria-label="Previous movies"
                 className={arrowClass}
               >
@@ -85,7 +92,7 @@ export default function TopMoviesCarousel() {
               <button
                 type="button"
                 onClick={() => scrollByPage(1)}
-                disabled={atEnd}
+                disabled={isPending || atEnd}
                 aria-label="Next movies"
                 className={arrowClass}
               >
@@ -95,24 +102,31 @@ export default function TopMoviesCarousel() {
           }
         />
 
-        <ul
-          ref={trackRef}
-          onScroll={updateEdges}
-          aria-label="Top rated movies"
-          className="-mx-4 no-scrollbar flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto scroll-smooth px-4 sm:mx-0 sm:scroll-px-0 sm:px-0"
-        >
-          {movies.map((movie, index) => (
-            <li
-              key={movie.id}
-              className={cn(
-                'shrink-0 snap-start',
-                'basis-[calc((100%-1rem)/2)] sm:basis-[calc((100%-2rem)/3)] md:basis-[calc((100%-3rem)/4)] lg:basis-[calc((100%-4rem)/5)]',
-              )}
-            >
-              <TopMovieCard movie={movie} rank={index + 1} />
-            </li>
-          ))}
-        </ul>
+        {isError ? (
+          <QueryError error={error} onRetry={() => refetch()} isRetrying={isRefetching} />
+        ) : (
+          <ul
+            ref={trackRef}
+            aria-busy={isPending}
+            onScroll={updateEdges}
+            aria-label="Top rated movies"
+            className="-mx-4 no-scrollbar flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto scroll-smooth px-4 sm:mx-0 sm:scroll-px-0 sm:px-0"
+          >
+            {isPending
+              ? Array.from({ length: 5 }, (_, i) => (
+                  <li key={i} className={cn(ITEM_CLASS, 'space-y-2')}>
+                    <Skeleton className="aspect-2/3 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                  </li>
+                ))
+              : movies.map((movie, index) => (
+                  <li key={movie.id} className={ITEM_CLASS}>
+                    <TopMovieCard movie={movie} rank={index + 1} />
+                  </li>
+                ))}
+          </ul>
+        )}
       </div>
     </section>
   );

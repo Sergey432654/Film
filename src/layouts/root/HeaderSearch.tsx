@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router';
 
 import { ROUTES } from '@/app/routes';
 import { cn } from '@/lib/cn';
-import { useMoviesStore } from '@/store/movies.store';
+import { useFiltersStore } from '@/store/filters.store';
 
 interface Props {
   className?: string;
@@ -13,8 +13,8 @@ interface Props {
 }
 
 export default function HeaderSearch({ className, autoFocus, onSubmitted }: Props) {
-  const searchTerm = useMoviesStore((s) => s.searchTerm);
-  const setSearchTerm = useMoviesStore((s) => s.setSearchTerm);
+  const searchTerm = useFiltersStore((s) => s.searchTerm);
+  const setSearchTerm = useFiltersStore((s) => s.setSearchTerm);
   const navigate = useNavigate();
   const { pathname } = useLocation();
 

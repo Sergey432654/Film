@@ -3,13 +3,15 @@ import { Link } from 'react-router';
 import Logo from './Logo';
 import { NAV_ITEMS } from './navigation';
 
+import { useGenreStats } from '@/api/movies/movies.queries';
 import { ROUTES } from '@/app/routes';
-import { useGenreStats, useMoviesStore } from '@/store/movies.store';
+import { useFiltersStore } from '@/store/filters.store';
 
 export default function Footer() {
   const year = new Date().getFullYear();
-  const topGenres = useGenreStats().slice(0, 5);
-  const browseGenre = useMoviesStore((s) => s.browseGenre);
+  const { data: genreStats } = useGenreStats();
+  const topGenres = genreStats?.slice(0, 5) ?? [];
+  const browseGenre = useFiltersStore((s) => s.browseGenre);
 
   return (
     <footer className="mt-auto border-t border-white/10 bg-chrome text-white/70">

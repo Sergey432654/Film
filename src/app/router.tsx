@@ -1,23 +1,26 @@
+import type { ComponentType } from 'react';
 import { createBrowserRouter } from 'react-router';
 
 import { ROUTES } from '@/app/routes';
 import RootLayout from '@/layouts/root/RootLayout';
-import AddMoviePage from '@/pages/add-movie/AddMoviePage';
 import ErrorPage from '@/pages/error/ErrorPage';
-import HomePage from '@/pages/home/HomePage';
-import MoviesPage from '@/pages/movies/MoviesPage';
-import NotFoundPage from '@/pages/not-found/NotFoundPage';
+import PageLoader from '@/ui/PageLoader';
+
+const page = (load: () => Promise<{ default: ComponentType }>) => async () => ({
+  Component: (await load()).default,
+});
 
 export const router = createBrowserRouter([
   {
     path: ROUTES.home,
     Component: RootLayout,
     ErrorBoundary: ErrorPage,
+    HydrateFallback: PageLoader,
     children: [
-      { index: true, Component: HomePage },
-      { path: ROUTES.movies, Component: MoviesPage },
-      { path: ROUTES.addMovie, Component: AddMoviePage },
-      { path: '*', Component: NotFoundPage },
+      { index: true, lazy: page(() => import('@/pages/home/HomePage')) },
+      { path: ROUTES.movies, lazy: page(() => import('@/pages/movies/MoviesPage')) },
+      { path: ROUTES.addMovie, lazy: page(() => import('@/pages/add-movie/AddMoviePage')) },
+      { path: '*', lazy: page(() => import('@/pages/not-found/NotFoundPage')) },
     ],
   },
 ]);

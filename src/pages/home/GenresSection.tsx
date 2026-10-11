@@ -1,15 +1,18 @@
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
 
+import { useGenreStats } from '@/api/movies/movies.queries';
 import { ROUTES } from '@/app/routes';
-import { useGenreStats, useMoviesStore } from '@/store/movies.store';
+import { useFiltersStore } from '@/store/filters.store';
+import QueryError from '@/ui/QueryError';
+import Skeleton from '@/ui/Skeleton';
 
 import SectionHeading from './SectionHeading';
 
 export default function GenresSection() {
-  const genres = useGenreStats();
-  const browseGenre = useMoviesStore((s) => s.browseGenre);
-  const resetFilters = useMoviesStore((s) => s.resetFilters);
+  const { data: genres, isPending, isError, error, refetch, isRefetching } = useGenreStats();
+  const browseGenre = useFiltersStore((s) => s.browseGenre);
+  const resetFilters = useFiltersStore((s) => s.resetFilters);
 
   return (
     <section
@@ -33,8 +36,21 @@ export default function GenresSection() {
           }
         />
 
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-          {genres.map(({ genre, count }) => (
+        {isError && (
+          <QueryError error={error} onRetry={() => refetch()} isRetrying={isRefetching} />
+        )}
+
+        <ul
+          aria-busy={isPending}
+          className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4"
+        >
+          {isPending &&
+            Array.from({ length: 8 }, (_, i) => (
+              <li key={i}>
+                <Skeleton className="h-[74px] w-full" />
+              </li>
+            ))}
+          {genres?.map(({ genre, count }) => (
             <li key={genre}>
               <Link
                 to={ROUTES.movies}

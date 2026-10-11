@@ -1,6 +1,6 @@
-import type { Movie } from '@/types/movie';
+import type { Movie } from '../movies/movies.schemas';
 
-export const MOVIES: Movie[] = [
+export const SEED_MOVIES: Movie[] = [
   { id: 1, title: 'Inception', genre: 'Sci-Fi', year: 2010, rating: 8.8 },
   { id: 2, title: 'The Godfather', genre: 'Crime', year: 1972, rating: 9.2 },
   { id: 3, title: 'The Dark Knight', genre: 'Action', year: 2008, rating: 9.0 },

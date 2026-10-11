@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 
+import { useGenres } from '@/api/movies/movies.queries';
 import { cn } from '@/lib/cn';
-import { useGenres, useMoviesStore } from '@/store/movies.store';
+import { useFiltersStore } from '@/store/filters.store';
+import Skeleton from '@/ui/Skeleton';
 
 function Chip({
   active,
@@ -30,17 +32,27 @@ function Chip({
 }
 
 export default function GenreFilter() {
-  const genres = useGenres();
-  const selectedGenre = useMoviesStore((s) => s.selectedGenre);
-  const setGenre = useMoviesStore((s) => s.setGenre);
-  const toggleGenre = useMoviesStore((s) => s.toggleGenre);
+  const { data: genres, isPending } = useGenres();
+  const selectedGenre = useFiltersStore((s) => s.selectedGenre);
+  const setGenre = useFiltersStore((s) => s.setGenre);
+  const toggleGenre = useFiltersStore((s) => s.toggleGenre);
+
+  if (isPending) {
+    return (
+      <div className="flex gap-2 overflow-hidden">
+        {Array.from({ length: 7 }, (_, i) => (
+          <Skeleton key={i} className="h-9 w-24 shrink-0" />
+        ))}
+      </div>
+    );
+  }
 
   return (
-    <div className="-mx-4 flex [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+    <div className="-mx-4 no-scrollbar flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
       <Chip active={selectedGenre === null} onClick={() => setGenre(null)}>
         All
       </Chip>
-      {genres.map((genre) => (
+      {genres?.map((genre) => (
         <Chip key={genre} active={selectedGenre === genre} onClick={() => toggleGenre(genre)}>
           {genre}
         </Chip>

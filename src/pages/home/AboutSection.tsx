@@ -1,8 +1,9 @@
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
 
+import { useGenres, useMovies } from '@/api/movies/movies.queries';
+import type { Movie } from '@/api/movies/movies.schemas';
 import { ROUTES } from '@/app/routes';
-import { useGenres, useMoviesStore } from '@/store/movies.store';
 
 const TEAM = [
   { name: 'Olena Kovalenko', role: 'Founder & Curator' },
@@ -11,6 +12,8 @@ const TEAM = [
   { name: 'Andrii Shevchuk', role: 'Film Critic' },
 ];
 
+const countMovies = (movies: Movie[]) => movies.length;
+
 const initials = (name: string) =>
   name
     .split(' ')
@@ -18,12 +21,12 @@ const initials = (name: string) =>
     .join('');
 
 export default function AboutSection() {
-  const moviesCount = useMoviesStore((s) => s.movies.length);
-  const genresCount = useGenres().length;
+  const { data: moviesCount } = useMovies(countMovies);
+  const { data: genres } = useGenres();
 
   const stats = [
-    { value: `${moviesCount}+`, label: 'Curated films' },
-    { value: genresCount, label: 'Genres' },
+    { value: moviesCount === undefined ? '—' : `${moviesCount}+`, label: 'Curated films' },
+    { value: genres?.length ?? '—', label: 'Genres' },
     { value: TEAM.length, label: 'People in the team' },
   ];
 

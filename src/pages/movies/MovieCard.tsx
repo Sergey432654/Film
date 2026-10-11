@@ -1,6 +1,6 @@
 import { Film, Star } from 'lucide-react';
 
-import type { Movie } from '@/types/movie';
+import type { Movie } from '@/api/movies/movies.schemas';
 
 interface Props {
   movie: Movie;
