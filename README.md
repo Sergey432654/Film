@@ -1,30 +1,181 @@
-# React + TypeScript + Vite
+# Film
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Каталог фільмів на React: інформаційна головна сторінка, каталог з пошуком і фільтром за жанрами, форма додавання фільму, світла й темна теми.
 
-Currently, two official plugins are available:
+## Можливості
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Головна** — блок «Хто ми» з командою та статистикою, карусель «Top 10» за рейтингом, плитки жанрів, форма підписки на розсилку (поки без бекенду, лише валідація).
+- **Каталог** (`/movies`) — сітка карток, пошук за назвою з хедера, фільтр за жанром.
+- **Додавання фільму** (`/movies/new`) — форма на react-hook-form + zod: валідація полів, лічильник символів, підказки жанрів, відображення серверних помилок по полях.
+- **Шар даних** — TanStack Query + axios з мок-бекендом, тож застосунок працює без сервера і готовий до підключення справжнього API.
+- **Тема** — перемикач у хедері; вибір зберігається в `localStorage`, за замовчуванням береться системна тема, без «спалаху» при завантаженні.
+- **Адаптивність** — мобільне меню, окремий мобільний пошук, горизонтальна прокрутка чипів і каруселі на малих екранах.
+- **404 і сторінка помилки** для невідомих маршрутів і помилок рендеру.
 
-## Expanding the ESLint configuration
+## Стек
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+| Напрям  | Інструменти                                                  |
+| ------- | ------------------------------------------------------------ |
+| UI      | React 19, TypeScript 6                                       |
+| Збірка  | Vite 8, `@vitejs/plugin-react`                               |
+| Стилі   | Tailwind CSS 4 (CSS-first), `clsx` + `tailwind-merge`, Inter |
+| Роутинг | React Router 7 (`createBrowserRouter`, вкладені маршрути)    |
+| Дані    | TanStack Query 5, axios, zod (валідація відповідей)          |
+| Стан UI | Zustand 5 (`devtools`, `persist`)                            |
+| Форми   | React Hook Form + `@hookform/resolvers` + zod                |
+| Іконки  | lucide-react                                                 |
+| Якість  | ESLint 10 (flat config, typescript-eslint), Prettier 3       |
 
-- Configure the top-level `parserOptions` property like this:
+## Швидкий старт
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
+Потрібен **Node.js `^20.19` або `>=22.12`**.
+
+```bash
+npm install
+npm run dev
+```
+
+Застосунок відкриється на http://localhost:5173. Без жодних налаштувань він працює на мок-бекенді.
+
+## Змінні оточення
+
+Скопіюйте `.env.example` у `.env.local` і змініть потрібне. Змінні перевіряються zod-схемою в `src/config/env.ts`: якщо значення некоректне, застосунок не стартує і покаже, яка саме змінна неправильна.
+
+| Змінна             | За замовчуванням            | Опис                                                      |
+| ------------------ | --------------------------- | --------------------------------------------------------- |
+| `VITE_API_URL`     | `http://localhost:3000/api` | Базовий URL бекенду                                       |
+| `VITE_API_MOCKS`   | `true`                      | `true` — мок-бекенд у браузері, `false` — справжні запити |
+| `VITE_API_TIMEOUT` | `10000`                     | Таймаут запиту, мс                                        |
+
+## Скрипти
+
+| Команда                | Що робить                                    |
+| ---------------------- | -------------------------------------------- |
+| `npm run dev`          | Dev-сервер з HMR                             |
+| `npm run build`        | Перевірка типів і production-збірка в `dist` |
+| `npm run preview`      | Локальний перегляд production-збірки         |
+| `npm run typecheck`    | Лише перевірка типів                         |
+| `npm run lint`         | ESLint                                       |
+| `npm run lint:fix`     | ESLint з автовиправленням                    |
+| `npm run format`       | Форматування Prettier                        |
+| `npm run format:check` | Перевірка форматування                       |
+
+## Структура
+
+```
+src/
+├─ api/
+│  ├─ http.ts           інстанс axios: baseURL, таймаут, нормалізація помилок
+│  ├─ errors.ts         ApiError і toApiError
+│  ├─ movies/           schemas (zod), api (запити), queries (ключі та хуки TanStack Query)
+│  └─ mock/             мок-бекенд: axios-адаптер, маршрути, in-memory БД, сид-дані
+├─ app/                 роутер, маршрути, QueryClient, провайдери
+├─ config/env.ts        типізовані змінні оточення
+├─ layouts/root/        RootLayout з <Outlet />, Header, Footer, пошук, перемикач теми
+├─ pages/
+│  ├─ home/             головна: About, карусель Top 10, жанри, розсилка
+│  ├─ movies/           каталог: сторінка, фільтр жанрів, картка фільму
+│  ├─ add-movie/        сторінка і форма додавання
+│  ├─ not-found/        404
+│  └─ error/            сторінка помилки роутера
+├─ store/               zustand-стори: фільтри каталогу та тема
+├─ ui/                  спільні UI-примітиви: Skeleton, QueryError, PageLoader
+├─ lib/                 утиліти (cn)
+└─ styles/index.css     Tailwind: тема, токени, базові стилі
+```
+
+Правило: компонент живе поруч зі сторінкою або layout, де використовується; у `ui/` — лише примітиви, потрібні кільком сторінкам. Імпорти між модулями — через аліас `@/` (`@/api/movies/movies.queries`).
+
+## Маршрути
+
+| Шлях          | Сторінка         |
+| ------------- | ---------------- |
+| `/`           | Головна          |
+| `/movies`     | Каталог          |
+| `/movies/new` | Додавання фільму |
+| `*`           | 404              |
+
+Сторінки завантажуються ліниво (`lazy` у роутері), кожна — окремим чанком. Нова сторінка: створити папку в `src/pages/` з компонентом за `export default`, додати шлях у `src/app/routes.ts` і дочірній маршрут `lazy: page(() => import(...))` у `src/app/router.tsx` — вона автоматично відрендериться всередині `RootLayout` через `<Outlet />`. Щоб посилання з'явилося в хедері й футері, додайте його в `src/layouts/root/navigation.ts`.
+
+## Стилі та тема
+
+Tailwind 4 налаштовано без `tailwind.config.js` — усе в `src/styles/index.css`:
+
+- `--color-brand-*` — фірмова палітра (індиго): `bg-brand-600`, `text-brand-400`…
+- семантичні токени, які перемикаються темою:
+
+  | Утиліта             | Призначення         |
+  | ------------------- | ------------------- |
+  | `bg-surface`        | фон сторінки        |
+  | `bg-surface-muted`  | фон секцій          |
+  | `bg-surface-raised` | картки, поля вводу  |
+  | `border-line`       | рамки й роздільники |
+  | `text-fg`           | основний текст      |
+  | `text-fg-muted`     | другорядний текст   |
+  | `bg-chrome`         | хедер і футер       |
+
+- темна тема вмикається класом `.dark` на `<html>`, варіант `dark:` доступний для точкових правок;
+- заокруглення стримане: `rounded-xs` / `rounded-sm` / `rounded-md`;
+- утиліти `container`, `no-scrollbar`, анімація `animate-fade-in`.
+
+Для VS Code рекомендовані розширення перелічені в `.vscode/extensions.json` (Tailwind CSS IntelliSense, ESLint, Prettier, EditorConfig).
+
+## Дані та API
+
+```
+компонент → хук (movies.queries) → moviesApi (movies.api) → http (axios) → бекенд | мок-адаптер
+```
+
+- **Серверний стан** — тільки в TanStack Query. Ключі зібрані в `movieKeys`, опції запитів — у `moviesListOptions()` / `movieDetailOptions(id)`. Похідні дані (`useFilteredMovies`, `useGenres`, `useGenreStats`, `useTopMovies`) рахуються через `select`, тому всі вони працюють з одним кешем і одним запитом.
+- **Мутації** — `useCreateMovie()` після успіху кладе фільм у кеш деталей та інвалідує списки.
+- **QueryClient** (`src/app/query-client.ts`): `staleTime` 1 хв, без рефетчу при фокусі вікна, помилки 4xx не повторюються, інші — до 2 разів. У dev-режимі доступні React Query Devtools (кнопка внизу ліворуч).
+- **Відповіді сервера** перевіряються zod-схемами в `movies.api.ts`: якщо бекенд поверне не той формат, це одразу стане помилкою, а не зламаним UI.
+- **Помилки** перехоплює інтерцептор axios і перетворює на `ApiError` з полями `status`, `message`, `fieldErrors`. UI показує їх через `QueryError` з кнопкою «Try again», а форма розкладає `fieldErrors` по відповідних полях.
+
+### Мок-бекенд
+
+Поки `VITE_API_MOCKS=true`, axios використовує власний адаптер (`src/api/mock/adapter.ts`): запити не йдуть у мережу, а обробляються маршрутами з `src/api/mock/routes.ts` зі штучною затримкою 250–650 мс. Дані зберігаються в `localStorage` (`film-mock-db`), тож додані фільми переживають перезавантаження; щоб скинути їх, видаліть цей ключ.
+
+Щоб додати ендпоінт: опишіть схему в `movies.schemas.ts`, функцію в `movies.api.ts`, хук у `movies.queries.ts` і обробник у `mock/routes.ts`. Коли з'явиться бекенд — встановіть `VITE_API_MOCKS=false` і `VITE_API_URL`; решту коду міняти не потрібно.
+
+### Контракт для бекенду
+
+| Метод  | Шлях          | Тіло запиту                                      | Відповідь                   |
+| ------ | ------------- | ------------------------------------------------ | --------------------------- |
+| `GET`  | `/movies`     | —                                                | `200 Movie[]`               |
+| `GET`  | `/movies/:id` | —                                                | `200 Movie` / `404`         |
+| `POST` | `/movies`     | `{ title, genre, year?, rating?, description? }` | `201 Movie` / `409` / `422` |
+
+`Movie`: `{ id: number, title: string, genre: string, year?: number, rating?: number, description?: string }`.
+
+Формат помилки, який розуміє фронтенд:
+
+```json
+{
+  "message": "Some fields are invalid.",
+  "errors": { "title": "A movie with this title already exists" }
 }
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+`errors` необов'язковий; ключі збігаються з назвами полів форми.
+
+## Валідація форми
+
+Правила описані один раз у `createMovieSchema` і використовуються і формою (через `zodResolver`), і мок-бекендом:
+
+| Поле          | Правила                                                         |
+| ------------- | --------------------------------------------------------------- |
+| `title`       | обов'язкове, 1–120 символів, пробіли по краях обрізаються       |
+| `genre`       | обов'язкове, 2–40 символів, лише літери, пробіли, `&`, `-`, `’` |
+| `year`        | необов'язкове, ціле, від 1888 до поточного року + 5             |
+| `rating`      | необов'язкове, 0–10, не більше одного знака після коми          |
+| `description` | необов'язкове, до 500 символів, з лічильником                   |
+
+Помилки показуються після того, як користувач вийде з поля (`mode: 'onTouched'`). Поки форма відправляється, поля заблоковані, а помилки сервера показуються біля відповідних полів і загальним повідомленням над формою.
+
+## Стан
+
+Zustand зберігає лише клієнтський стан інтерфейсу, серверні дані — в TanStack Query.
+
+- `useFiltersStore` — пошуковий запит і вибраний жанр каталогу та дії (`setSearchTerm`, `setGenre`, `toggleGenre`, `browseGenre`, `resetFilters`). У dev-режимі стор видно в Redux DevTools.
+- `useThemeStore` — поточна тема й `toggleTheme`, зберігається в `localStorage` під ключем `film-theme`.
